@@ -1,10 +1,8 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Home, TrendingUp, Briefcase, User, ShoppingCart } from 'lucide-react';
 
 export default function Layout({ children }) {
-  const location = useLocation();
-
   const tabs = [
     { name: 'Home', path: '/', icon: <Home size={22} /> },
     { name: 'Markets', path: '/markets', icon: <TrendingUp size={22} /> },

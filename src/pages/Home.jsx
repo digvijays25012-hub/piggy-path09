@@ -1,31 +1,12 @@
 import React, { useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
-import { Wallet, History, Eye, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import Mascot from '../components/Mascot';
+import { History, TrendingUp, TrendingDown, ArrowUpRight, Bell } from 'lucide-react';
 
 export default function Home() {
-  const { portfolio, stocks, balance, recentlyViewed } = useStore();
+  const { portfolio, stocks, balance } = useStore();
   const navigate = useNavigate();
   
-  const totalValue = useMemo(() => {
-    return portfolio.reduce((acc, p) => {
-      const stock = stocks.find(s => s.id === p.stockId);
-      return acc + (stock ? stock.price * p.quantity : 0);
-    }, 0);
-  }, [portfolio, stocks]);
-
-  const totalInvestment = useMemo(() => {
-    return portfolio.reduce((acc, p) => acc + (p.avgPrice * p.quantity), 0);
-  }, [portfolio]);
-
-  const totalProfit = totalValue - totalInvestment;
-  const totalProfitPercent = totalInvestment > 0 ? (totalProfit / totalInvestment) * 100 : 0;
-
-  const recentStocksData = useMemo(() => {
-    return recentlyViewed.map(id => stocks.find(s => s.id === id)).filter(Boolean);
-  }, [recentlyViewed, stocks]);
-
   const topHoldings = useMemo(() => {
     return [...portfolio]
       .sort((a, b) => {
