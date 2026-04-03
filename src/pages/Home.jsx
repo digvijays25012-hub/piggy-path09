@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { History, TrendingUp, TrendingDown, ArrowUpRight, Bell } from 'lucide-react';
+import Mascot from '../components/Mascot';
 
 export default function Home() {
   const { portfolio, stocks, balance } = useStore();
@@ -81,6 +82,12 @@ export default function Home() {
       <section className="p-6 mb-4">
         <div className="bg-slate-900 rounded-[40px] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-300 group active:scale-[0.98] transition-transform duration-200">
           <div className="absolute top-0 right-0 w-40 h-40 bg-red-400/10 blur-[80px] -mr-20 -mt-20 group-hover:bg-red-400/20 transition-all" />
+          
+          {/* Mascot Peeking Correction */}
+          <div className="absolute -top-6 -right-2 w-28 h-28 transform rotate-6 z-20 pointer-events-none drop-shadow-2xl">
+              <Mascot />
+          </div>
+
           <div className="relative z-10">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 block opacity-80">Portfolio Value</span>
             <div className="flex items-baseline gap-2 mb-8">

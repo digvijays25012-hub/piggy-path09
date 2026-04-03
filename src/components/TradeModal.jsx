@@ -114,6 +114,9 @@ export default function TradeModal({ type, stock, holding, onClose }) {
 
              {status === 'success' && (
                 <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                  <div className="w-24 h-24 mb-4">
+                     <img src="/assets/mascot.png" className="w-full h-full object-contain" alt="Success Mascot" />
+                  </div>
                   <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 shadow-xl shadow-emerald-50">
                      <CheckCircle2 size={48} />
                   </div>
