@@ -100,6 +100,7 @@ export default function StockDetail() {
         <TradeModal 
           stock={stock} 
           type={tradeType} 
+          holding={holding}
           onClose={() => setTradeType(null)} 
         />
       )}

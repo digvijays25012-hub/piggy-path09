@@ -14,13 +14,15 @@ export default function TradeModal({ type, stock, holding, onClose }) {
     return q * stock.price;
   }, [qty, stock.price]);
 
+  const isBuy = type.toUpperCase() === 'BUY';
+
   const canExecute = useMemo(() => {
     const q = parseFloat(qty) || 0;
     if (q <= 0) return false;
-    if (type === 'BUY') return total <= balance;
-    if (type === 'SELL') return holding && q <= holding.quantity;
+    if (isBuy) return total <= balance;
+    if (!isBuy) return holding && q <= holding.quantity;
     return false;
-  }, [type, qty, total, balance, holding]);
+  }, [isBuy, qty, total, balance, holding]);
 
   const handleExecute = async () => {
     setStatus('processing');
@@ -61,11 +63,11 @@ export default function TradeModal({ type, stock, holding, onClose }) {
 
           <div className="p-8">
              <div className="flex items-center gap-3 mb-8">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${type === 'BUY' ? 'bg-red-50 text-red-500 shadow-red-100' : 'bg-slate-50 text-slate-400 shadow-slate-100'}`}>
-                   {type === 'BUY' ? <ShoppingCart size={24} /> : <Tag size={24} />}
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${isBuy ? 'bg-red-50 text-red-500 shadow-red-100' : 'bg-slate-50 text-slate-400 shadow-slate-100'}`}>
+                   {isBuy ? <ShoppingCart size={24} /> : <Tag size={24} />}
                 </div>
                 <div>
-                   <h2 className="text-xl font-black text-slate-900">{type === 'BUY' ? 'Buy stock' : 'Sell stock'}</h2>
+                   <h2 className="text-xl font-black text-slate-900">{isBuy ? 'Buy stock' : 'Sell stock'}</h2>
                    <p className="text-slate-400 font-bold text-xs uppercase tracking-wider">{stock.symbol}</p>
                 </div>
              </div>
@@ -90,7 +92,7 @@ export default function TradeModal({ type, stock, holding, onClose }) {
                         />
                         <div className="text-xs text-slate-400 font-bold mt-2 flex items-center gap-1">
                            <Wallet size={12} />
-                           {type === 'BUY' ? (
+                           {isBuy ? (
                              <>AVL. BALANCE: ₹{balance.toLocaleString()}</>
                            ) : (
                              <>SHARES OWNED: {holding?.quantity || 0}</>
@@ -100,7 +102,7 @@ export default function TradeModal({ type, stock, holding, onClose }) {
 
                      {/* Summary */}
                      <div className="flex justify-between items-center py-2 px-4">
-                        <span className="text-slate-400 font-bold text-sm">TOTAL {type === 'BUY' ? 'COST' : 'RECEIVE'}:</span>
+                        <span className="text-slate-400 font-bold text-sm">TOTAL {isBuy ? 'COST' : 'RECEIVE'}:</span>
                         <span className="text-2xl font-black text-slate-900">₹{total.toLocaleString()}</span>
                      </div>
 
