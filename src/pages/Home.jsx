@@ -37,35 +37,58 @@ export default function Home() {
   }, [portfolio, stocks]);
 
   return (
-    <div className="pb-24 px-6 pt-16 bg-white min-h-screen">
-      {/* Header */}
-      <header className="flex justify-between items-center mb-8">
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-32">
+      {/* Top Professional Ticker */}
+      <div className="bg-slate-900 h-8 flex items-center overflow-hidden whitespace-nowrap gap-8 px-4 border-b border-slate-800">
+         <div className="flex items-center gap-2">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">NIFTY 50</span>
+            <span className="text-[10px] font-bold text-emerald-400">21,690.20</span>
+            <span className="text-[10px] font-bold text-emerald-500/50">+1.25%</span>
+         </div>
+         <div className="flex items-center gap-2">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">BANKNIFTY</span>
+            <span className="text-[10px] font-bold text-red-400">21,690.20</span>
+            <span className="text-[10px] font-bold text-red-500/50">-1.25%</span>
+         </div>
+         <div className="flex items-center gap-2">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">FINNIFTY</span>
+            <span className="text-[10px] font-bold text-emerald-400">21,690.20</span>
+         </div>
+      </div>
+
+      <header className="px-6 pt-10 pb-6 bg-white border-b border-slate-100 flex justify-between items-center sticky top-0 z-30">
         <div>
-          <h2 className="text-slate-400 font-bold text-xs uppercase mb-1">Total Balance</h2>
-          <div className="flex items-baseline gap-1">
-            <span className="text-slate-900 font-bold text-3xl">₹{(totalValue + balance).toLocaleString()}</span>
-            <span className="text-slate-400 font-semibold text-sm">INR</span>
+          <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none mb-1">Piggypath</h1>
+          <div className="flex items-center gap-2">
+             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">LIVE TRADING</span>
           </div>
         </div>
-        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center">
-          <Wallet className="text-slate-900" size={24} />
+        <div className="flex items-center gap-3">
+           <div className="bg-slate-50 border border-slate-100 px-3 py-2 rounded-xl flex flex-col items-end">
+              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">TOTAL P&L</span>
+              <span className="text-xs font-black text-emerald-500 tracking-tight">+₹4,322</span>
+           </div>
+           <button className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl shadow-slate-200">
+             <Bell size={18} />
+           </button>
         </div>
       </header>
 
       {/* Quick Actions (Static Tiles) */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-4 gap-4 mb-8 px-6 mt-8">
          {[
-           { icon: <TrendingUp size={20} />, label: 'Markets', color: 'bg-slate-50 text-slate-400', path: '/markets' },
-           { icon: <TrendingDown size={20} />, label: 'Watchlist', color: 'bg-slate-50 text-slate-400', path: '/markets' },
-           { icon: <History size={20} />, label: 'History', color: 'bg-slate-50 text-slate-400', path: '/portfolio' },
-           { icon: <ArrowUpRight size={20} />, label: 'Asset', color: 'bg-slate-50 text-slate-400', path: '/portfolio' },
+           { icon: <TrendingUp size={20} />, label: 'Markets', color: 'bg-white text-slate-400', path: '/markets' },
+           { icon: <TrendingDown size={20} />, label: 'Watchlist', color: 'bg-white text-slate-400', path: '/markets' },
+           { icon: <History size={20} />, label: 'History', color: 'bg-white text-slate-400', path: '/portfolio' },
+           { icon: <ArrowUpRight size={20} />, label: 'Asset', color: 'bg-white text-slate-400', path: '/portfolio' },
          ].map((action) => (
            <button 
              key={action.label}
              onClick={() => navigate(action.path)}
              className="flex flex-col items-center gap-2"
            >
-              <div className={`w-full aspect-square ${action.color} rounded-2xl flex items-center justify-center`}>
+              <div className={`w-full aspect-square ${action.color} rounded-2xl flex items-center justify-center shadow-sm`}>
                  {action.icon}
               </div>
               <span className="text-[10px] font-bold uppercase text-slate-400 tracking-tight">{action.label}</span>
@@ -73,35 +96,36 @@ export default function Home() {
          ))}
       </div>
 
-      {/* Portfolio Card (Static) */}
-      <div className="card p-6 mb-8 relative border border-slate-100 shadow-none bg-slate-50 rounded-[32px]">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <span className="text-slate-400 font-bold text-xs uppercase">Portfolio P/L</span>
-            <div className={`text-2xl font-bold mt-1 flex items-center gap-1 ${totalProfit >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-              {totalProfit >= 0 ? '+' : '-'}₹{Math.abs(totalProfit).toLocaleString()}
-              <span className="text-sm opacity-70 ml-1">({totalProfitPercent.toFixed(2)}%)</span>
+      {/* Portfolio Quick Look */}
+      <section className="p-6 mb-4">
+        <div className="bg-slate-900 rounded-[40px] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-300 group active:scale-[0.98] transition-transform duration-200">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-red-400/10 blur-[80px] -mr-20 -mt-20 group-hover:bg-red-400/20 transition-all" />
+          <div className="relative z-10">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 block opacity-80">Portfolio Value</span>
+            <div className="flex items-baseline gap-2 mb-8">
+               <h2 className="text-4xl font-black tracking-tighter">₹{balance.toLocaleString()}</h2>
+               <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <TrendingUp size={12} />
+                  +1.5%
+               </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                  <span className="text-[8px] text-slate-500 font-bold uppercase mb-1 block">DAILY P&L</span>
+                  <p className="font-black text-sm text-emerald-400">+ ₹{4322}</p>
+               </div>
+               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                  <span className="text-[8px] text-slate-500 font-bold uppercase mb-1 block">USED MARGIN</span>
+                  <p className="font-black text-sm text-slate-300">₹{0}</p>
+               </div>
             </div>
           </div>
-          <div className="absolute right-[-10px] bottom-[-10px] opacity-20">
-             <Mascot />
-          </div>
         </div>
-        
-        <div className="flex items-center gap-4 mt-6">
-           <div className="flex-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase">Investment</span>
-              <p className="font-bold text-slate-800">₹{totalInvestment.toLocaleString()}</p>
-           </div>
-           <div className="flex-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase">Current Value</span>
-              <p className="font-bold text-slate-800">₹{totalValue.toLocaleString()}</p>
-           </div>
-        </div>
-      </div>
+      </section>
 
       {/* Top Holdings */}
-      <section>
+      <section className="px-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-bold text-slate-900 tracking-tight">Top Stocks</h3>
           <button className="text-slate-400 font-bold text-xs uppercase" onClick={() => navigate('/portfolio')}>See All</button>
