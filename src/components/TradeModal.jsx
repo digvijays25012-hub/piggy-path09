@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 export default function TradeModal({ type, stock, holding, onClose }) {
   const [qty, setQty] = useState('');
   const [status, setStatus] = useState('input'); // input, processing, success, error
-  const { balance, executeTrade, addTradeEvent } = useStore();
+  const { balance, executeTrade, addTradeEvent, syncBrokerageData } = useStore();
 
   const total = useMemo(() => {
     const q = parseFloat(qty) || 0;
@@ -25,12 +25,11 @@ export default function TradeModal({ type, stock, holding, onClose }) {
 
   const handleExecute = async () => {
     setStatus('processing');
-    await new Promise(r => setTimeout(r, 1500));
-    
-    const success = executeTrade(stock.id, type, parseFloat(qty), stock.price);
+    const success = await executeTrade(stock.id, type, parseFloat(qty), stock.price);
     
     if (success) {
       setStatus('success');
+      syncBrokerageData();
       confetti({
         particleCount: 150,
         spread: 100,

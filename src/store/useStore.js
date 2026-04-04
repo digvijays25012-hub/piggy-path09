@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import * as api from '../api';
 
 const INITIAL_STOCKS = [
   { id: '1', symbol: 'AAPL', name: 'Apple Inc.', price: 182.52, changePercent: 1.25, history: [] },
@@ -15,7 +16,7 @@ const INITIAL_STOCKS = [
 export const useStore = create(
   persist(
     (set, get) => ({
-      // --- DATABASE ALIGNED STATE ---
+      // --- LIVE BROKERAGE STATE ---
       user: null,
       isLoggedIn: false,
       balance: 100000,
@@ -23,61 +24,54 @@ export const useStore = create(
       trades: [],    // Array of { id, stockId, type, quantity, price, total, timestamp }
       stocks: INITIAL_STOCKS,
       recentlyViewed: [],
+      
+      // REAL DATA FROM ZERODHA
+      realHoldings: [],
+      realProfit: 0,
 
-      // --- AUTH MODULE ---
-      login: (phone) => set({ 
-        user: { id: 'u1', phone, name: 'Trader' },
-        isLoggedIn: true 
-      }),
+      // --- AUTH MODULE (Zerodha-Ready) ---
+      login: async (phone) => {
+        // Redirection logic to Zerodha will happen in UI component
+        set({ user: { phone, name: 'Trader' }, isLoggedIn: true });
+      },
       logout: () => set({ user: null, isLoggedIn: false }),
 
-      // --- TRADING MODULE (LLD Logic) ---
-      executeTrade: (stockId, type, quantity, price) => {
-        const { balance, portfolio, trades } = get();
-        const total = quantity * price;
+      // --- SYNC BROKERAGE DATA ---
+      syncBrokerageData: async () => {
+        try {
+          const holdings = await api.fetchHoldings();
+          let totalPnl = 0;
+          holdings.forEach(h => totalPnl += h.pnl);
 
-        if (type === 'BUY') {
-          // Validation: Cannot buy without balance
-          if (balance < total) return false;
-          
-          const existing = portfolio.find(p => p.stockId === stockId);
-          let newPortfolio;
-          if (existing) {
-            const newQty = existing.quantity + quantity;
-            const newAvgPrice = (existing.avgPrice * existing.quantity + total) / newQty;
-            newPortfolio = portfolio.map(p => p.stockId === stockId ? { ...p, quantity: newQty, avgPrice: newAvgPrice } : p);
-          } else {
-            newPortfolio = [...portfolio, { stockId, quantity, avgPrice: price }];
+          set({ 
+             realHoldings: holdings, 
+             realProfit: totalPnl 
+          });
+        } catch (err) {
+          console.error("Broker Sync Failed", err);
+        }
+      },
+
+      // --- LIVE TRADING (Kite Integrated) ---
+      executeTrade: async (stockId, type, quantity, price) => {
+        const symbol = get().stocks.find(s => s.id === stockId)?.symbol;
+        if (!symbol) return false;
+
+        try {
+          const order = type === 'BUY' 
+            ? await api.placeBuyOrder(symbol, quantity)
+            : await api.placeSellOrder(symbol, quantity);
+
+          if (order.success) {
+            await get().syncBrokerageData();
+            return true;
           }
-
-          set({
-            balance: balance - total,
-            portfolio: newPortfolio,
-            trades: [{ id: Date.now().toString(), stockId, type, quantity, price, total, timestamp: Date.now() }, ...trades]
-          });
-          return true;
-        } 
-        
-        if (type === 'SELL') {
-          // Validation: Cannot sell more than owned
-          const existing = portfolio.find(p => p.stockId === stockId);
-          if (!existing || existing.quantity < quantity) return false;
-
-          let newPortfolio = portfolio.map(p => 
-            p.stockId === stockId ? { ...p, quantity: p.quantity - quantity } : p
-          ).filter(p => p.quantity > 0);
-
-          set({
-            balance: balance + total,
-            portfolio: newPortfolio,
-            trades: [{ id: Date.now().toString(), stockId, type, quantity, price, total, timestamp: Date.now() }, ...trades]
-          });
-          return true;
+        } catch (err) {
+          console.error("Live Trade Failed", err);
         }
         return false;
       },
 
-      // --- MARKET MODULE (Real-time Simulation) ---
       updateStockPrices: () => {
         set((state) => ({
           stocks: state.stocks.map((stock) => {
@@ -101,7 +95,8 @@ export const useStore = create(
       }
     }),
     {
-      name: 'piggy-path-v2-storage',
+      name: 'piggy-path-v3-real-trading',
     }
   )
 );
+
