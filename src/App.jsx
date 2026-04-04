@@ -23,16 +23,18 @@ export default function App() {
 
   return (
     <Router>
-       {!user ? (
+        {!user ? (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
        ) : (
           <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Navigate to="/" replace />} />
               <Route path="/markets" element={<Markets />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/profile" element={<Profile />} />

@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Outfit';
-  src: url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
 
 :root {
   font-family: 'Outfit', sans-serif;
@@ -36,6 +33,7 @@ body {
 /* Glassmorphism Utilities */
 .glass-pane {
   background: rgba(31, 33, 40, 0.8);
+  -webkit-backdrop-filter: blur(20px); /* Safari 9+ support */
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }

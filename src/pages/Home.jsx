@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, Bell, Search, Layers, History, ArrowUpRight }
 import Mascot from '../components/Mascot';
 
 export default function Home() {
-  const { stocks, realHoldings, realProfit, syncBrokerageData, balance } = useStore();
+  const { realHoldings, realProfit, syncBrokerageData, balance } = useStore();
   const navigate = useNavigate();
 
   useEffect(() => {
