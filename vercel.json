@@ -1,8 +1,4 @@
 {
-  "version": 2,
-  "framework": "vite",
-  "public": true,
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/auth.js" },
     { "source": "/(.*)", "destination": "/index.html" }
