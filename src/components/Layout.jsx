@@ -1,51 +1,54 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Home, TrendingUp, Briefcase, User, ShoppingCart } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Home, TrendingUp, Wallet, User, Plus } from 'lucide-react';
 
 export default function Layout({ children }) {
+  const location = useLocation();
+  
   const tabs = [
-    { name: 'Home', path: '/', icon: <Home size={22} /> },
-    { name: 'Markets', path: '/markets', icon: <TrendingUp size={22} /> },
-    { name: 'Trade', path: '/trade', icon: <ShoppingCart size={22} />, isMain: true },
-    { name: 'Portfolio', path: '/portfolio', icon: <Briefcase size={22} /> },
-    { name: 'Profile', path: '/profile', icon: <User size={22} /> },
+    { icon: <Home size={24} />, path: '/', label: 'Home' },
+    { icon: <TrendingUp size={24} />, path: '/markets', label: 'Markets' },
+    { icon: <Plus size={28} />, path: '/trade-center', label: 'Trade', primary: true }, // Centered Action
+    { icon: <Wallet size={24} />, path: '/portfolio', label: 'Portfolio' },
+    { icon: <User size={24} />, path: '/profile', label: 'Profile' }
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden max-w-md mx-auto relative safe-top safe-bottom">
-      <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth bg-white">
+    <div className="min-h-screen bg-[#141416] pb-32">
+      <main className="max-w-md mx-auto min-h-screen relative shadow-2xl bg-[#141416]">
         {children}
-      </main>
 
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 h-[calc(5rem+env(safe-area-inset-bottom,0px))] flex items-start justify-between pt-3 pb-safe z-40 max-w-md mx-auto">
-        {tabs.map((tab) => (
-          <NavLink
-            key={tab.path}
-            to={tab.path}
-            className={({ isActive }) => 
-              `flex flex-col items-center justify-center transition-all ${tab.isMain ? 'relative -top-6' : ''} ${isActive ? 'text-[#FF6B6B]' : 'text-slate-300'}`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <div className={`p-3 rounded-2xl transition-all duration-200 ${tab.isMain ? 'bg-[#FF6B6B] text-white shadow-xl shadow-red-200/50' : isActive ? 'bg-red-50/50' : 'bg-transparent'}`}>
-                  {tab.icon}
-                </div>
-                {!tab.isMain && (
-                   <span className={`text-[10px] mt-1 font-bold uppercase tracking-tight ${isActive ? 'opacity-100' : 'opacity-0'}`}>
-                      {tab.name}
-                   </span>
-                )}
-                {/* Simplified static Active Indicator */}
-                {!tab.isMain && isActive && (
-                  <div className="absolute -bottom-1 w-1 h-1 bg-[#FF6B6B] rounded-full" />
-                )}
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
+        {/* Improved Glassmorphic Bottom Nav */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-8">
+           <div className="max-w-md mx-auto bg-[#1F2128]/80 backdrop-blur-2xl border border-white/5 rounded-[32px] h-20 flex items-center justify-between px-4 shadow-premium">
+              {tabs.map((tab) => {
+                if (tab.primary) {
+                  return (
+                    <button 
+                      key={tab.label}
+                      className="w-14 h-14 bg-[#3772FF] text-white rounded-2xl flex items-center justify-center -mt-12 shadow-glow active:scale-95 transition-all"
+                    >
+                      {tab.icon}
+                    </button>
+                  );
+                }
+                return (
+                  <NavLink
+                    key={tab.path}
+                    to={tab.path}
+                    className={({ isActive }) => `
+                      flex flex-col items-center gap-1 px-4 py-2 rounded-2xl transition-all
+                      ${isActive ? 'text-[#3772FF]' : 'text-[#777E90]'}
+                    `}
+                  >
+                    {tab.icon}
+                    <span className="text-[10px] font-black uppercase tracking-tighter">{tab.label}</span>
+                  </NavLink>
+                );
+              })}
+           </div>
+        </nav>
+      </main>
     </div>
   );
 }

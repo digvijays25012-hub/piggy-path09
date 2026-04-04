@@ -2,40 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-slate-50 text-slate-900 font-sans;
-    -webkit-tap-highlight-color: transparent;
-    /* Enable smooth scroll and prevent overscroll on iOS */
-    overscroll-behavior-y: none;
-  }
+@font-face {
+  font-family: 'Outfit';
+  src: url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+:root {
+  font-family: 'Outfit', sans-serif;
+  background-color: #141416;
+  color: #FFFFFF;
 }
 
-/* Safe areas for mobile apps */
-.safe-top {
-  padding-top: env(safe-area-inset-top, 0px);
-}
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-.h-screen-safe {
-  height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-[#FF6B6B] text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-red-200 active:scale-95 transition-all outline-none;
-  }
-  .card {
-     @apply bg-white p-4 rounded-3xl border border-slate-100 shadow-sm shadow-slate-200/50;
-  }
+/* Custom Scrollbar for Terminal Feel */
+::-webkit-scrollbar {
+  width: 4px;
 }
 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+/* Glassmorphism Utilities */
+.glass-pane {
+  background: rgba(31, 33, 40, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Animation for glowing elements */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; filter: blur(40px); }
+  50% { opacity: 0.8; filter: blur(60px); }
+}
+
+.glow-bg {
+  animation: pulse-glow 4s infinite ease-in-out;
+}

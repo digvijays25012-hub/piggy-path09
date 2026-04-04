@@ -31,12 +31,11 @@ export default function TradeModal({ type, stock, holding, onClose }) {
     
     if (success) {
       setStatus('success');
-      
       confetti({
         particleCount: 150,
         spread: 100,
         origin: { y: 0.6 },
-        colors: ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF']
+        colors: ['#3772FF', '#45B26B', '#EF466F']
       });
       addTradeEvent?.(); 
       setTimeout(onClose, 2500);
@@ -47,91 +46,84 @@ export default function TradeModal({ type, stock, holding, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
-       <div className="bg-white w-full max-w-sm rounded-[40px] shadow-2xl overflow-hidden relative">
-          <button onClick={onClose} className="absolute top-6 right-6 text-slate-300 hover:text-slate-900 transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#141416]/90 backdrop-blur-md">
+       <div className="bg-[#1F2128] border border-white/10 w-full max-w-sm rounded-[32px] shadow-premium overflow-hidden relative">
+          <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
             <X size={24} />
           </button>
 
           <div className="p-8">
-             <div className="flex items-center gap-3 mb-8">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${isBuy ? 'bg-red-50 text-red-500 shadow-red-100' : 'bg-slate-50 text-slate-400 shadow-slate-100'}`}>
+             <div className="flex items-center gap-3 mb-10">
+                <div className={`w-12 h-12 rounded-[20px] flex items-center justify-center shadow-glow ${isBuy ? 'bg-[#3772FF]/10 text-[#3772FF]' : 'bg-[#EF466F]/10 text-[#EF466F]'}`}>
                    {isBuy ? <ShoppingCart size={24} /> : <Tag size={24} />}
                 </div>
                 <div>
-                   <h2 className="text-xl font-black text-slate-900">{isBuy ? 'Buy stock' : 'Sell stock'}</h2>
-                   <p className="text-slate-400 font-bold text-xs uppercase tracking-wider">{stock.symbol}</p>
+                   <h2 className="text-xl font-black text-white">{isBuy ? 'Buy stock' : 'Sell stock'}</h2>
+                   <p className="text-[#777E90] font-bold text-xs uppercase tracking-widest">{stock.symbol}</p>
                 </div>
              </div>
 
              {status === 'input' && (
-               <div className="space-y-6">
-                  {/* Quantity Input */}
-                  <div className="bg-slate-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 border border-slate-100 ring-2 ring-transparent focus-within:ring-red-100 transition-all">
-                     <span className="text-slate-400 font-bold text-xs uppercase mb-1">ENTER QUANTITY</span>
+               <div className="space-y-8">
+                  <div className="bg-white/5 border border-white/5 rounded-[24px] p-6 flex flex-col items-center justify-center gap-2 focus-within:ring-2 ring-[#3772FF]/50 transition-all">
+                     <span className="text-[#777E90] font-black text-[10px] uppercase tracking-widest mb-1">Enter Shares Volume</span>
                      <input 
                        type="number" 
                        placeholder="0"
-                       className="bg-transparent text-center text-4xl font-black text-slate-900 outline-none w-full"
+                       className="bg-transparent text-center text-4xl font-black text-white outline-none w-full placeholder:text-white/10"
                        autoFocus
                        value={qty}
                        onChange={(e) => setQty(e.target.value)}
                      />
-                     <div className="text-xs text-slate-400 font-bold mt-2 flex items-center gap-1">
+                     <div className="text-[10px] text-[#777E90] font-black mt-2 flex items-center gap-2 uppercase tracking-widest">
                         <Wallet size={12} />
                         {isBuy ? (
-                          <>AVL. BALANCE: ₹{balance.toLocaleString()}</>
+                          <>Available: ₹{balance.toLocaleString()}</>
                         ) : (
-                          <>SHARES OWNED: {holding?.quantity || 0}</>
+                          <>Owned: {holding?.quantity || 0}</>
                         )}
                      </div>
                   </div>
 
-                  {/* Summary */}
                   <div className="flex justify-between items-center py-2 px-4">
-                     <span className="text-slate-400 font-bold text-sm">TOTAL {isBuy ? 'COST' : 'RECEIVE'}:</span>
-                     <span className="text-2xl font-black text-slate-900">₹{total.toLocaleString()}</span>
+                     <span className="text-[#777E90] font-bold text-xs">Total Order Value:</span>
+                     <span className="text-2xl font-black text-white">₹{total.toLocaleString()}</span>
                   </div>
 
-                  {/* Execute Button */}
                   <button 
                     disabled={!canExecute}
                     onClick={handleExecute}
-                    className={`w-full h-16 rounded-2xl font-black text-lg transition-all shadow-xl ${canExecute ? 'bg-[#FF6B6B] text-white shadow-red-200' : 'bg-slate-100 text-slate-300'}`}
+                    className={`w-full h-16 rounded-[22px] font-black text-lg transition-all shadow-glow ${canExecute ? 'bg-[#3772FF] text-white hover:bg-white hover:text-[#141416]' : 'bg-[#23262F] text-white/10'}`}
                   >
-                     Confirm {type.toLowerCase()} order
+                     Confirm Order
                   </button>
                </div>
              )}
 
              {status === 'processing' && (
                <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-                  <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
-                  <h3 className="text-lg font-black text-slate-900">Processing order...</h3>
-                  <p className="text-slate-400 font-bold text-sm">Validating with market engine</p>
+                  <div className="w-16 h-16 border-4 border-[#3772FF] border-t-transparent rounded-full animate-spin" />
+                  <h3 className="text-lg font-black text-white leading-tight">Authenticating <br/> Order Block...</h3>
                </div>
              )}
 
              {status === 'success' && (
                 <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-                  <div className="w-24 h-24 mb-4">
-                     <img src="/assets/mascot.png" className="w-full h-full object-contain" alt="Success Mascot" />
-                  </div>
-                  <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 shadow-xl shadow-emerald-50">
+                  <div className="w-20 h-20 bg-[#45B26B]/10 rounded-full flex items-center justify-center text-[#45B26B] shadow-glow shadow-[#45B26B]/50">
                      <CheckCircle2 size={48} />
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900">Transaction Success!</h3>
-                  <p className="text-emerald-500 font-bold">Your portfolio has been updated</p>
+                  <h3 className="text-2xl font-black text-white">Success!</h3>
+                  <p className="text-[#45B26B] font-bold text-sm">Portfolio Balance Updated</p>
                 </div>
              )}
 
              {status === 'error' && (
                 <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-                  <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-500">
+                  <div className="w-16 h-16 bg-[#EF466F]/10 rounded-full flex items-center justify-center text-[#EF466F]">
                      <X size={32} />
                   </div>
-                  <h3 className="text-lg font-black text-slate-900">Order Failed</h3>
-                  <p className="text-red-400 font-medium">Insufficient balance or quantity</p>
+                  <h3 className="text-lg font-black text-white">Order Declined</h3>
+                  <p className="text-[#EF466F] font-medium text-xs">Insufficient margin or liquidity</p>
                 </div>
              )}
           </div>

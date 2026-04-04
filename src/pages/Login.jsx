@@ -82,25 +82,25 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col px-8 pt-12 max-w-md mx-auto relative">
-      {/* Dynamic Background Decoration */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-red-50/50 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+    <div className="min-h-screen bg-[#141416] flex flex-col px-8 pt-12 max-w-md mx-auto relative overflow-hidden">
+      {/* Neon Back-glow */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[#3772FF]/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
 
       <button 
         onClick={() => step === 1 ? navigate('/') : setStep(1)}
-        className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-10 text-slate-400 active:scale-90 transition-transform"
+        className="w-12 h-12 bg-[#1F2128] border border-white/5 rounded-2xl flex items-center justify-center mb-10 text-[#777E90] active:scale-90 transition-transform"
       >
         <ArrowLeft size={20} />
       </button>
 
       <div className="mb-12">
-        <div className="w-16 h-16 bg-[#FF6B6B] rounded-[22px] flex items-center justify-center mb-6 shadow-2xl shadow-red-100 transform -rotate-6">
+        <div className="w-16 h-16 bg-[#3772FF] rounded-[22px] flex items-center justify-center mb-6 shadow-glow transform -rotate-6">
            <ShieldCheck size={32} className="text-white" />
         </div>
-        <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">
+        <h1 className="text-3xl font-black text-white mb-2 tracking-tight">
           {step === 1 ? 'Verify Identity' : 'Enter Code'}
         </h1>
-        <p className="text-slate-400 font-bold text-sm">
+        <p className="text-[#777E90] font-bold text-sm">
           {step === 1 
             ? 'Access your secure trading dashboard.' 
             : `We sent a 6-digit code to +91 ${phone.slice(0,5)} ${phone.slice(5)}`
@@ -111,13 +111,13 @@ export default function Login() {
       {step === 1 ? (
         <form onSubmit={handleSendOTP} className="space-y-8">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 mb-3 uppercase tracking-[0.2em]">REGISTERED MOBILE</label>
-            <div className="flex items-center bg-slate-50 border border-slate-100 rounded-3xl px-6 py-6 focus-within:ring-4 ring-red-50 transition-all">
-              <span className="text-slate-900 font-black mr-4 text-lg">+91</span>
+            <label className="block text-[10px] font-black text-[#777E90] mb-3 uppercase tracking-[0.2em]">REGISTERED MOBILE</label>
+            <div className="flex items-center bg-[#1F2128] border border-white/5 rounded-3xl px-6 py-6 focus-within:ring-2 ring-[#3772FF]/50 transition-all">
+              <span className="text-white font-black mr-4 text-lg">+91</span>
               <input 
                 type="tel" 
                 placeholder="000 000 0000"
-                className="bg-transparent flex-1 outline-none text-xl font-bold text-slate-900 placeholder:text-slate-200"
+                className="bg-transparent flex-1 outline-none text-xl font-bold text-white placeholder:text-white/10"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
               />
@@ -126,7 +126,7 @@ export default function Login() {
           <button 
             type="submit" 
             disabled={phone.length !== 10 || isLoading}
-            className="w-full bg-[#FF6B6B] text-white h-16 rounded-[24px] font-black text-lg shadow-2xl shadow-red-100 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+            className="w-full bg-[#3772FF] text-white h-16 rounded-[24px] font-black text-lg shadow-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
           >
             {isLoading ? (
                 <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
@@ -137,7 +137,7 @@ export default function Login() {
         </form>
       ) : (
         <form onSubmit={handleVerifyOTP} className="space-y-8">
-           <div className="flex justify-between gap-3">
+           <div className="flex justify-between gap-2">
             {otp.map((digit, idx) => (
               <input 
                 key={idx}
@@ -145,7 +145,7 @@ export default function Login() {
                 type="text" 
                 inputMode="numeric"
                 maxLength={1}
-                className="w-full aspect-square bg-slate-50 border border-slate-100 rounded-2xl text-center text-2xl font-black text-slate-900 outline-none focus:ring-4 ring-red-50 transition-all"
+                className="w-full aspect-square bg-[#1F2128] border border-white/5 rounded-2xl text-center text-2xl font-black text-white outline-none focus:ring-2 ring-[#3772FF]/50 transition-all"
                 value={digit}
                 onChange={(e) => handleOtpChange(idx, e.target.value)}
               />
@@ -156,7 +156,7 @@ export default function Login() {
             <button 
                 type="submit" 
                 disabled={otp.join('').length !== 6 || isLoading}
-                className="w-full bg-[#FF6B6B] text-white h-16 rounded-[24px] font-black text-lg shadow-2xl shadow-red-100 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                className="w-full bg-[#3772FF] text-white h-16 rounded-[24px] font-black text-lg shadow-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             >
                 {isLoading ? (
                     <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
@@ -167,14 +167,14 @@ export default function Login() {
             
             <div className="flex items-center justify-center gap-2">
                 {timer > 0 ? (
-                    <span className="text-slate-400 font-bold text-xs flex items-center gap-1">
+                    <span className="text-[#777E90] font-bold text-xs flex items-center gap-1">
                         <Timer size={14} /> Resend in {timer}s
                     </span>
                 ) : (
                     <button 
                         type="button"
                         onClick={() => setTimer(30)}
-                        className="text-[#FF6B6B] font-black text-xs uppercase tracking-widest hover:underline"
+                        className="text-[#3772FF] font-black text-xs uppercase tracking-widest hover:underline"
                     >
                         Resend OTP
                     </button>
@@ -184,8 +184,8 @@ export default function Login() {
         </form>
       )}
       
-      <div className="mt-auto py-8 text-center">
-          <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest leading-loose">
+      <div className="mt-auto py-8 text-center px-4">
+          <p className="text-[10px] text-[#777E90]/50 font-bold uppercase tracking-widest leading-loose">
               By proceeding, you agree to Piggypath's <br/>
               Terms of Service & Privacy Policy
           </p>

@@ -6,63 +6,49 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white flex flex-col px-8 pt-24 pb-12 items-center text-center max-w-md mx-auto relative overflow-hidden">
-        {/* Simple Header */}
-        <div className="flex items-center gap-3 mb-10 w-full justify-start">
-          <div className="w-8 h-8 bg-[#FF6B6B] rounded-lg flex items-center justify-center shadow-lg shadow-red-200">
-             <img src="https://api.iconify.design/solar:piggy-bank-bold-duotone.svg?color=white" className="w-5 h-5" alt="Logo" />
+    <div className="min-h-screen bg-[#141416] flex flex-col px-8 pt-24 pb-12 items-center text-center max-w-md mx-auto relative overflow-hidden">
+        {/* Neon Back-glow */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#3772FF]/10 blur-[120px] -mr-40 -mt-40 pointer-events-none" />
+
+        {/* Global Logo Header */}
+        <div className="flex items-center gap-3 mb-10 w-full justify-start sticky top-0 z-50 py-4">
+          <div className="w-10 h-10 bg-[#3772FF] rounded-[16px] flex items-center justify-center shadow-glow">
+             <img src="https://api.iconify.design/solar:piggy-bank-bold-duotone.svg?color=white" className="w-7 h-7" alt="Logo" />
           </div>
-          <span className="text-lg font-black text-slate-900 tracking-tight">Piggypath</span>
+          <span className="text-xl font-black text-white tracking-tighter">Piggypath</span>
         </div>
 
-        {/* Static Mascot */}
-        <div className="w-80 h-80 mb-12 flex items-center justify-center relative">
+        {/* Mascot Highlight Section */}
+        <div className="w-80 h-80 mb-12 flex items-center justify-center relative group">
              <img 
                src="/assets/mascot.png" 
                alt="Piggy Mascot"
-               className="w-full h-full object-contain relative z-20"
+               className="w-full h-full object-contain relative z-20 drop-shadow-[0_0_40px_rgba(55,114,255,0.3)] group-hover:scale-105 transition-transform duration-700"
              />
-             <div className="absolute inset-0 bg-red-50 rounded-full filter blur-3xl scale-75 opacity-20 z-10" />
+             <div className="absolute inset-0 bg-[#3772FF]/5 rounded-full filter blur-[80px] scale-90 glow-bg z-10" />
         </div>
 
-        <h1 className="text-3xl font-black text-slate-900 leading-[1.1] mb-6">
+        <h1 className="text-4xl font-black text-white leading-[1.05] mb-6 tracking-tighter">
           Invest Better, <br/>
           Simple & Smart.
         </h1>
 
-        <p className="text-slate-400 font-bold text-sm max-w-[280px] leading-relaxed mb-12">
-          Join thousands of smart traders making simple investment choices.
+        <p className="text-[#777E90] font-bold text-sm max-w-[280px] leading-relaxed mb-12">
+          Join thousands of smart traders making intelligent investment choices.
         </p>
 
-        {/* Feature Grid (Static) */}
-        <div className="grid grid-cols-3 gap-6 w-full mb-12">
-             {[
-               { icon: <Zap size={20} />, label: "Fast", color: "text-amber-500" },
-               { icon: <Target size={20} />, label: "Smart", color: "text-emerald-500" },
-               { icon: <TrendingUp size={20} />, label: "Growth", color: "text-[#FF6B6B]" },
-             ].map((feat, i) => (
-                <div key={i} className="flex flex-col items-center gap-2">
-                   <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center">
-                      <span className={feat.color}>{feat.icon}</span>
-                   </div>
-                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-tighter">{feat.label}</span>
-                </div>
-             ))}
-        </div>
-
-        {/* Simple CTA */}
+        {/* CTA Section */}
         <button 
             onClick={() => navigate('/login')}
-            className="w-full bg-[#FF6B6B] text-white h-14 rounded-2xl font-black text-md shadow-xl shadow-red-200 flex items-center justify-center gap-3 active:opacity-80 transition-all"
+            className="w-full bg-[#3772FF] text-white h-16 rounded-[24px] font-black text-md shadow-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3"
         >
-            Get Started
-            <ArrowRight size={20} />
+            Authorize Entry
+            <ArrowRight size={22} />
         </button>
           
-        <p className="text-center text-slate-300 font-bold text-xs mt-8">
-            Trusted by 50k+ users
+        <p className="text-center text-[#777E90]/50 font-black text-[10px] uppercase tracking-[0.2em] mt-10">
+            Trusted by 50,000+ Smart Investors
         </p>
-
     </div>
   );
 }
