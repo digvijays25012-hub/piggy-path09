@@ -15,19 +15,69 @@ const INITIAL_STOCKS = [
 export const useStore = create(
   persist(
     (set, get) => ({
+      // --- DATABASE ALIGNED STATE ---
       user: null,
+      isLoggedIn: false,
       balance: 100000,
-      portfolio: [],
+      portfolio: [], // Array of { stockId, quantity, avgPrice }
+      trades: [],    // Array of { id, stockId, type, quantity, price, total, timestamp }
       stocks: INITIAL_STOCKS,
       recentlyViewed: [],
-      trades: [],
-      tradeEventCount: 0,
 
-      login: (phone) => set({ user: { id: 'user_1', phone, isLoggedIn: true } }),
-      logout: () => set({ user: null }),
+      // --- AUTH MODULE ---
+      login: (phone) => set({ 
+        user: { id: 'u1', phone, name: 'Trader' },
+        isLoggedIn: true 
+      }),
+      logout: () => set({ user: null, isLoggedIn: false }),
 
-      addTradeEvent: () => set((state) => ({ tradeEventCount: state.tradeEventCount + 1 })),
+      // --- TRADING MODULE (LLD Logic) ---
+      executeTrade: (stockId, type, quantity, price) => {
+        const { balance, portfolio, trades } = get();
+        const total = quantity * price;
 
+        if (type === 'BUY') {
+          // Validation: Cannot buy without balance
+          if (balance < total) return false;
+          
+          const existing = portfolio.find(p => p.stockId === stockId);
+          let newPortfolio;
+          if (existing) {
+            const newQty = existing.quantity + quantity;
+            const newAvgPrice = (existing.avgPrice * existing.quantity + total) / newQty;
+            newPortfolio = portfolio.map(p => p.stockId === stockId ? { ...p, quantity: newQty, avgPrice: newAvgPrice } : p);
+          } else {
+            newPortfolio = [...portfolio, { stockId, quantity, avgPrice: price }];
+          }
+
+          set({
+            balance: balance - total,
+            portfolio: newPortfolio,
+            trades: [{ id: Date.now().toString(), stockId, type, quantity, price, total, timestamp: Date.now() }, ...trades]
+          });
+          return true;
+        } 
+        
+        if (type === 'SELL') {
+          // Validation: Cannot sell more than owned
+          const existing = portfolio.find(p => p.stockId === stockId);
+          if (!existing || existing.quantity < quantity) return false;
+
+          let newPortfolio = portfolio.map(p => 
+            p.stockId === stockId ? { ...p, quantity: p.quantity - quantity } : p
+          ).filter(p => p.quantity > 0);
+
+          set({
+            balance: balance + total,
+            portfolio: newPortfolio,
+            trades: [{ id: Date.now().toString(), stockId, type, quantity, price, total, timestamp: Date.now() }, ...trades]
+          });
+          return true;
+        }
+        return false;
+      },
+
+      // --- MARKET MODULE (Real-time Simulation) ---
       updateStockPrices: () => {
         set((state) => ({
           stocks: state.stocks.map((stock) => {
@@ -48,51 +98,10 @@ export const useStore = create(
         set((state) => ({
           recentlyViewed: [stockId, ...state.recentlyViewed.filter(id => id !== stockId)].slice(0, 5)
         }));
-      },
-
-      executeTrade: (stockId, type, quantity, price) => {
-        const { balance, portfolio, trades } = get();
-        const totalCost = quantity * price;
-
-        if (type === 'BUY') {
-          if (balance < totalCost) return false;
-          
-          const existing = portfolio.find(p => p.stockId === stockId);
-          let newPortfolio;
-          if (existing) {
-            const newQty = existing.quantity + quantity;
-            const newAvgPrice = (existing.avgPrice * existing.quantity + totalCost) / newQty;
-            newPortfolio = portfolio.map(p => p.stockId === stockId ? { ...p, quantity: newQty, avgPrice: newAvgPrice } : p);
-          } else {
-            newPortfolio = [...portfolio, { stockId, quantity, avgPrice: price }];
-          }
-
-          set({
-            balance: balance - totalCost,
-            portfolio: newPortfolio,
-            trades: [{ stockId, type, quantity, price, timestamp: Date.now() }, ...trades]
-          });
-          return true;
-        } else if (type === 'SELL') {
-          const existing = portfolio.find(p => p.stockId === stockId);
-          if (!existing || existing.quantity < quantity) return false;
-
-          let newPortfolio = portfolio.map(p => 
-            p.stockId === stockId ? { ...p, quantity: p.quantity - quantity } : p
-          ).filter(p => p.quantity > 0);
-
-          set({
-            balance: balance + totalCost,
-            portfolio: newPortfolio,
-            trades: [{ stockId, type, quantity, price, timestamp: Date.now() }, ...trades]
-          });
-          return true;
-        }
-        return false;
       }
     }),
     {
-      name: 'piggy-path-storage',
+      name: 'piggy-path-v2-storage',
     }
   )
 );
